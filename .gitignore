@@ -1,0 +1,44 @@
+# Local environment files. Keep the checked-in template available.
+.env
+.env.*
+!.env.example
+
+# Python environments, bytecode, and test/tool caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.tox/
+.coverage
+htmlcov/
+
+# Node dependencies and frontend/build output
+node_modules/
+dist/
+build/
+.vite/
+.next/
+.parcel-cache/
+.turbo/
+coverage/
+
+# Local database files and SQLite journals
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+
+# Packaging and OS files
+*.egg-info/
+.DS_Store
+Thumbs.db
