@@ -1,0 +1,309 @@
+# CareVoice – AI-Powered Doctor Appointment Assistant
+
+A real-time voice-based doctor appointment assistant that allows patients to interact with an AI assistant, check doctor availability, book appointments, and cancel existing appointments through natural voice conversations.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [AI Model](#ai-model)
+- [Voice Pipeline](#voice-pipeline)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation and Setup](#installation-and-setup)
+- [Environment Configuration](#environment-configuration)
+- [Running the Application](#running-the-application)
+- [API Overview](#api-overview)
+- [Appointment Workflow](#appointment-workflow)
+- [Security](#security)
+- [Limitations](#limitations)
+
+## Overview
+
+CareVoice is an AI-powered voice assistant designed to simplify doctor appointment management.
+
+Instead of navigating through multiple forms, patients can speak directly with the assistant using their browser microphone.
+
+The assistant understands requests, checks available appointment slots, collects patient information, verifies phone numbers, and performs booking or cancellation after confirmation.
+
+The application also includes a web dashboard to view doctors and appointment information.
+
+## Features
+
+- **Voice Interaction:** Talk to the assistant directly through the browser.
+- **Doctor Availability:** Check available doctors and appointment slots.
+- **Appointment Booking:** Book appointments through voice conversations.
+- **Appointment Cancellation:** Cancel existing appointments with confirmation.
+- **Phone Verification:** The assistant reads back the phone number and asks for confirmation.
+- **Web Dashboard:** View doctors and appointment details.
+- **Live Voice Pipeline:** Real-time audio communication using WebRTC.
+- **Conversation Interface:** View conversation transcripts in the application.
+
+## Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Backend development |
+| FastAPI | Backend API framework |
+| React | Frontend interface |
+| Pipecat | Real-time voice pipeline orchestration |
+| Google Gemini | Conversational AI and LLM |
+| ElevenLabs STT | Speech-to-text |
+| ElevenLabs TTS | Text-to-speech |
+| WebRTC | Browser audio communication |
+| SQLite | Appointment and application data |
+| SQLAlchemy | Database interaction |
+
+## AI Model
+
+CareVoice uses **Google Gemini – `gemini-3.5-flash-lite`** as its Large Language Model (LLM).
+
+Gemini processes the conversation and helps the assistant understand user requests and generate responses.
+
+ElevenLabs is used for speech recognition and speech generation.
+
+## Voice Pipeline
+
+The voice pipeline connects the patient's speech with the AI assistant.
+
+### Pipeline Flow
+
+1. **Audio Input:** The patient speaks through the browser microphone.
+2. **WebRTC:** Audio is transmitted between the browser and backend.
+3. **Pipecat:** Manages the real-time voice processing pipeline.
+4. **Speech-to-Text:** ElevenLabs converts the patient's speech into text.
+5. **LLM Processing:** Gemini understands the request and generates a response.
+6. **Backend Tools:** The assistant uses appointment functions to check availability, book appointments, or cancel appointments.
+7. **Text-to-Speech:** ElevenLabs converts the response into speech.
+8. **Audio Output:** The response is played to the patient through the browser.
+
+### Architecture
+
+```text
+        Patient
+           |
+      Browser Mic
+           |
+         WebRTC
+           |
+         Pipecat
+           |
+      ElevenLabs STT
+           |
+      Google Gemini
+           |
+    Backend Functions
+           |
+   ---------------------
+   |         |         |
+Availability Booking Cancellation
+   |         |         |
+   ---------------------
+           |
+      ElevenLabs TTS
+           |
+       WebRTC Audio
+           |
+        Patient
+```
+
+## Project Structure
+
+```text
+CareVoice/
+│
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── seed.py
+│   │   └── services.py
+│   │
+│   ├── pipecat_worker.py
+│   ├── voice_tools.py
+│   ├── requirements.txt
+│   ├── requirements-voice.txt
+│   └── .env.example
+│
+├── frontend/
+│   └── src/
+│
+├── .gitignore
+└── README.md
+```
+
+## Prerequisites
+
+Before running CareVoice, install:
+
+- Python 3.11 or compatible version
+- Node.js and npm
+- Git
+- VS Code (recommended)
+- Google Gemini API key
+- ElevenLabs API key
+
+## Installation and Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/arnavayush-db/CareVoice.git
+cd CareVoice
+```
+
+### 2. Backend Setup
+
+Open a terminal:
+
+```bash
+cd backend
+```
+
+Create a Python virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Install the required dependencies:
+
+```bash
+pip install -r requirements-voice.txt
+```
+
+### 3. Environment Configuration
+
+Create a `.env` file inside the backend folder using the provided example:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `backend/.env` and configure your API credentials and application settings using the variable names provided in `.env.example`.
+
+Required credentials include:
+
+- Google Gemini API key
+- ElevenLabs API key
+- ElevenLabs voice ID
+
+Never upload your actual `.env` file to GitHub.
+
+### 4. Frontend Setup
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+```
+
+## Running the Application
+
+### Start the Backend
+
+From the backend directory, activate the virtual environment and run:
+
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+Backend:
+
+`http://127.0.0.1:8000`
+
+API documentation:
+
+`http://127.0.0.1:8000/docs`
+
+### Start the Frontend
+
+Open another terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the local URL displayed by Vite in your terminal. The configured development port is typically `5175`.
+
+## API Overview
+
+The backend exposes API routes for application operations.
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/offer` | Handles WebRTC voice connection offers |
+| `PATCH /api/offer` | Handles WebRTC connection updates |
+| `GET /api/voice/status` | Checks voice pipeline configuration |
+| `/api/assistant` | Handles assistant text interactions |
+
+Additional doctor and appointment endpoints are implemented in the backend. Refer to the interactive FastAPI documentation at `/docs` for their current request formats.
+
+## Appointment Workflow
+
+### Booking
+
+1. The patient starts a voice conversation.
+2. The assistant asks for the patient's phone number.
+3. The patient provides the number.
+4. The assistant reads the number back and requests confirmation.
+5. The patient asks for doctor availability.
+6. The assistant provides available appointment slots.
+7. The patient selects a suitable slot and provides the required details.
+8. The assistant confirms the booking.
+9. The dashboard displays the updated appointment.
+
+### Cancellation
+
+1. The patient requests cancellation.
+2. The assistant verifies the phone number.
+3. It identifies the patient's appointment.
+4. The patient selects the appointment if necessary.
+5. The assistant asks for a separate final confirmation.
+6. The appointment is cancelled.
+7. The dashboard reflects the updated status.
+
+## Security
+
+- API credentials are stored in environment variables.
+- `.env` files must not be committed.
+- `.env.example` contains configuration placeholders.
+- SQLite database files are excluded from Git.
+- Phone number confirmation is required before appointment actions.
+
+## Limitations
+
+- This project uses sample doctor and appointment data.
+- It is a demonstration application, not a production hospital booking system.
+- Actual appointment availability depends on the configured application database.
+- Voice functionality requires microphone permission and working provider credentials.
+- Internet connectivity is required for the external AI and speech services.
+
+## Future Improvements
+
+- Integration with real hospital appointment systems.
+- Patient authentication and secure identity verification.
+- More advanced multilingual support.
+- Deployment to a cloud environment.
+- Improved monitoring and error handling.
+
+## Author
+
+**Arnav Ayush**
+
+GitHub: [arnavayush-db](https://github.com/arnavayush-db)
+
+Project: [CareVoice Repository](https://github.com/arnavayush-db/CareVoice)
